@@ -1,0 +1,59 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  slug String @id
+  email String @unique
+  password String
+  name String
+  avatar String @default("default.jpg")
+  cover String @default("default.jpg")
+  bio String?
+  link String?
+	posts Post[]
+	likes PostLike[]
+}
+
+model Post {
+  id Int @id @default(autoincrement())
+  userSlug String
+  body String
+  image String?
+  createdAt DateTime @default(now())
+  commentOf Int @default(0) // se 0 -> post original, se != 0 -> comment do post (x)
+	user User @relation(fields: [userSlug], references: [slug])
+	likes PostLike[]
+}
+
+model PostLike {
+  id Int @id @default(autoincrement())
+  userSlug String
+  postId Int
+	user User @relation(fields: [userSlug], references: [slug])
+	post Post @relation(fields: [postId], references: [id])
+}
+
+model Follow {
+	id Int @id @default(autoincrement())
+	user1Slug String
+	user2Slug String
+}
+
+model Trend {
+	id Int @id @default(autoincrement())
+	hashtag String
+	counter Int @default(1)
+	updatedAt DateTime @default(now())
+}
