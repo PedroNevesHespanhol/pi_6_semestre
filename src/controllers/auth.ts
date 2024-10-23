@@ -3,7 +3,9 @@ import { signupSchema } from "../schemas/signup";
 import { error } from "console";
 import { createUser, findUserByEmail, findUserBySlug } from "../services/user";
 import slug from "slug";
-import { hash } from "bcrypt-ts";
+import { compare, hash } from "bcrypt-ts";
+import { createJWT } from "../utils/jwt";
+import { signinSchema } from "../schemas/signin";
 
 export const signup: RequestHandler = async (req, res) => {
     
@@ -44,8 +46,7 @@ export const signup: RequestHandler = async (req, res) => {
     });
 
     // cria o token de acesso
-    const token = '';
-
+    const token = createJWT(userSlug);
 
     // retorna o resultado (token, user)
     res.status(201).json({
@@ -57,3 +58,27 @@ export const signup: RequestHandler = async (req, res) => {
         }
     });
 }
+
+export const signin: RequestHandler = async (req, res) => {
+    const safeData = signinSchema.safeParse(req.body);
+    if(!safeData.success){
+        return res.json({ error: safeData.error.flatten().fieldErrors });
+    }
+
+    const user = await findUserByEmail(safeData.data.email);
+    if(!user) return res.status(401).json({ error: 'Acesso negado!' });
+
+    const verifyPass = await compare(safeData.data.password, user.password);
+    if(!verifyPass) return res.status(401).json({ error: 'Acesso negado!' });
+
+    const token = createJWT(user.slug);
+
+    res.status(200).json({
+        token,
+        user: {
+            name: user.name,
+            slug: user.slug,
+            avatar: user.avatar
+        }
+    });
+} 
