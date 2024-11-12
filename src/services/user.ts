@@ -51,3 +51,69 @@ export const createUser = async (data:Prisma.UserCreateInput) => {
     }
     
 }
+
+export const getUserFollowingCount = async (slug: string) => {
+    const count = await prisma.follow.count({
+        where: { user1Slug: slug }
+    });
+    return count;
+}
+
+export const getUserFollowersCount = async (slug: string) => {
+    const count = await prisma.follow.count({
+        where: { user2Slug: slug }
+    });
+    return count;
+}
+
+export const getUserPostsCount = async (slug: string) => {
+    const count = await prisma.post.count({
+        where: { userSlug: slug }
+    });
+    return count;
+}
+
+export const findPostsByUser = async (slug: string, currentPage: number, perPage: number) => {
+    const posts = await prisma.post.findMany({
+        include: {
+            likes: {
+                select: {
+                    userSlug: true
+                }
+            }
+        },
+        where: { userSlug: slug, commentOf: 0 },
+        orderBy: { createdAt: 'desc' },
+        skip: currentPage * perPage,
+        take: perPage
+    });
+
+    return posts;
+}
+
+export const checkIfFollows = async (user1Slug: string, user2Slug: string) => {
+    const follows = await prisma.follow.findFirst({
+        where: { user1Slug, user2Slug }
+    });
+
+    return follows ? true : false;
+}
+
+export const followUser = async (user1Slug: string, user2Slug: string) => {
+    await prisma.follow.create({
+        data: { user1Slug, user2Slug }
+    });
+}
+
+export const unfollowUser = async (user1Slug: string, user2Slug: string) => {
+    await prisma.follow.deleteMany({
+        where: { user1Slug, user2Slug }
+    });
+}
+
+export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput) => {
+    await prisma.user.update({ 
+        where: { slug },
+        data
+    });
+}
