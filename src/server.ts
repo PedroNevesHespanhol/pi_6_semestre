@@ -7,7 +7,10 @@ import { mainRouter } from "./routers/main";
 const server = express();
 server.use(cookieParser());
 server.use(helmet());
-server.use(cors());
+server.use(cors({
+    origin: 'http://localhost:3000', // Origem do frontend
+    credentials: true // Permite o envio de cookies
+}));
 server.use(urlencoded({ extended: true }));
 server.use(express.json());
 
