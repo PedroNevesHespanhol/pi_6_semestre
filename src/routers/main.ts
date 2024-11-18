@@ -14,8 +14,8 @@ export const mainRouter = Router();
 mainRouter.get('/ping', pingController.ping);
 mainRouter.get('/privatePing', verifyJWT, pingController.privatePing);
 
-mainRouter.post('/auth/signup', authCotroller.signup);
-mainRouter.post('/auth/signin', authCotroller.signin);
+mainRouter.post('/signup', authCotroller.signup);
+mainRouter.post('/signin', authCotroller.signin);
 
 mainRouter.post('/post', verifyJWT, postController.addPost);
 mainRouter.get('/post/:id', verifyJWT, postController.getPost);
