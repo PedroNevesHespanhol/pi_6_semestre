@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "engines": {
-    "node": "20.18.0"
+    "node": "18"
   },
   "scripts": {
-    "dev": "node --import=tsx --watch --env-file=.env ./src/server.ts",
+    "dev": "node -r dotenv/config  --import=tsx ./src/server.ts",
     "build": "tsup src",
     "start": "node -r dotenv/config --import=tsx --watch ./dist/server.js"
   },

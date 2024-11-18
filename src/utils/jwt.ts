@@ -11,7 +11,7 @@ export const createJWT = (slug: string) => {
 
 export const verifyJWT = (req: ExtendedRequest, res: Response, next: NextFunction) => {
     // Verificando se o cookie contém o token
-    const token = req.cookies["authToken"]; // 'authToken' é o nome do cookie que definimos
+    const token = req.cookies['authToken']; // 'authToken' é o nome do cookie que definimos
 
     if (!token) {
         return res.status(401).json({ error: 'Acesso negado! Token não encontrado.' });

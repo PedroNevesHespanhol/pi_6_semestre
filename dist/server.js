@@ -691,8 +691,8 @@ var getSuggestions = (req, res) => __async(void 0, null, function* () {
 var mainRouter = (0, import_express.Router)();
 mainRouter.get("/ping", ping);
 mainRouter.get("/privatePing", verifyJWT, privatePing);
-mainRouter.post("/auth/signup", signup);
-mainRouter.post("/auth/signin", signin);
+mainRouter.post("/signup", signup);
+mainRouter.post("/signin", signin);
 mainRouter.post("/post", verifyJWT, addPost);
 mainRouter.get("/post/:id", verifyJWT, getPost);
 mainRouter.get("/post/:id/comment", verifyJWT, getComments);
