@@ -15,3 +15,17 @@ export const addHashtag = async (hashtag:string) => {
         });
     }
 }
+
+export const findTrends = async () => {
+    const trends = await prisma.trend.findMany({
+       select: {
+            hashtag: true,
+            counter: true
+        },
+       orderBy: {
+            counter: 'desc'
+        },
+       take: 4
+    });
+    return trends;
+}

@@ -48,9 +48,14 @@ export const signup: RequestHandler = async (req, res) => {
     // cria o token de acesso
     const token = createJWT(userSlug);
 
+    res.cookie("authToken", token, {
+        httpOnly: true,   // Não acessível via JavaScript
+        secure: process.env.NODE_ENV === "production", // Só enviar em HTTPS, em produção
+        maxAge: 3600000,   // Token expira após 1 hora (1 hora = 3600000 ms)
+        sameSite: "strict", // Impede que o cookie seja enviado em requisições cross-site
+    });
     // retorna o resultado (token, user)
     res.status(201).json({
-        token,
         user: {
             name: newUser.name,
             slug: newUser.slug,
@@ -72,9 +77,14 @@ export const signin: RequestHandler = async (req, res) => {
     if(!verifyPass) return res.status(401).json({ error: 'Acesso negado!' });
 
     const token = createJWT(user.slug);
+    res.cookie("authToken", token, {
+        httpOnly: true,   // Não acessível via JavaScript
+        secure: process.env.NODE_ENV === "production", // Só enviar em HTTPS, em produção
+        maxAge: 3600000,   // Token expira após 1 hora (1 hora = 3600000 ms)
+        sameSite: "strict", // Impede que o cookie seja enviado em requisições cross-site
+    });
 
     res.status(200).json({
-        token,
         user: {
             name: user.name,
             slug: user.slug,

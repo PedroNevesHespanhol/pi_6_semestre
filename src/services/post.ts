@@ -93,3 +93,72 @@ export const likePost = async (slug:string, id:number) => {
         }
     });
 }
+
+export const findPostFeed = async (following: string[], currentPage: number, perPage: number) => {
+    const posts = await prisma.post.findMany({
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    avatar: true,
+                    slug: true
+                }
+            },
+            likes: {
+                select: {
+                    userSlug: true
+                }
+            }
+        },
+        where: {
+            userSlug: {
+                in: following
+            },
+            commentOf: 0
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: currentPage * perPage,
+        take: perPage
+    });
+
+    for(let postIndex in posts){
+        posts[postIndex].user.avatar = getPublicURL(posts[postIndex].user.avatar)
+    }
+
+    return posts;
+}
+
+export const findPostsByBody = async (bodyContains: string, currentPage: number, perPage: number) => {
+    const posts = await prisma.post.findMany({
+        include: {
+            user: {
+                select: {
+                    name: true,
+                    avatar: true,
+                    slug: true
+                }
+            },
+            likes: {
+                select: {
+                    userSlug: true
+                }
+            }
+        },
+        where: {
+            body: {
+                contains: bodyContains,
+                mode: 'insensitive'
+            },
+            commentOf: 0
+        },
+        orderBy: { createdAt: 'desc' },
+        skip: currentPage * perPage,
+        take: perPage
+    });
+
+    for(let postIndex in posts){
+        posts[postIndex].user.avatar = getPublicURL(posts[postIndex].user.avatar)
+    }
+
+    return posts;
+}

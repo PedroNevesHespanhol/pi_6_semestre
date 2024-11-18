@@ -117,3 +117,44 @@ export const updateUserInfo = async (slug: string, data: Prisma.UserUpdateInput)
         data
     });
 }
+
+export const getUserFollowing = async (slug: string) => {
+    const following = [];
+    const reqFollow = await prisma.follow.findMany({
+        select: {
+            user2Slug: true
+        },
+        where: { user1Slug: slug }
+    });
+
+    for(let follow of reqFollow){
+        following.push(follow.user2Slug);
+    }
+
+    return following;
+}
+
+export const getFollowSuggestions = async (slug: string) => {
+    const following = await getUserFollowing(slug);
+
+    const followingPlusMe = [...following, slug];
+
+    type Suggestion = Pick<
+        Prisma.UserGetPayload<Prisma.UserDefaultArgs>,
+        "name" | "avatar" | "slug"
+    >;
+
+    const suggestions: Suggestion[] = await prisma.$queryRaw`
+        SELECT
+            name, avatar, slug
+        FROM "User"
+        WHERE
+            slug NOT IN (${followingPlusMe.join(',')})
+        ORDER BY RANDOM()
+        LIMIT 2;
+    `;
+
+    for(let slugIndex in suggestions) {
+        suggestions[slugIndex].avatar = getPublicURL(suggestions[slugIndex].avatar);
+    }
+}

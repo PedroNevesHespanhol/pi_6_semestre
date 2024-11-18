@@ -4,6 +4,10 @@ import * as authCotroller from "../controllers/auth";
 import * as postController from "../controllers/post";
 import { verifyJWT } from "../utils/jwt";
 import * as userController from "../controllers/user";
+import * as feedController from "../controllers/feed";
+import * as searchController from "../controllers/search";
+import * as trendController from "../controllers/trend";
+import * as suggestionsController from "../controllers/suggestion"
 
 export const mainRouter = Router();
 
@@ -25,7 +29,7 @@ mainRouter.put('/user', verifyJWT, userController.updateUser);
 // mainRouter.put('/user/avatar');
 // mainRouter.put('/user/cover');
 
-// mainRouter.get('/feed');
-// mainRouter.get('/search');
-// mainRouter.get('/trending');
-// mainRouter.get('/suggestions');
+mainRouter.get('/feed', verifyJWT, feedController.getFeed);
+mainRouter.get('/search', verifyJWT, searchController.searchPosts);
+mainRouter.get('/trending', verifyJWT, trendController.getTrends);
+mainRouter.get('/suggestions', verifyJWT, suggestionsController.getSuggestions);
