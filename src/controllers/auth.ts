@@ -45,14 +45,11 @@ export const signup: RequestHandler = async (req, res) => {
         password: hashPassword 
     });
 
-    // cria o token de acesso
+    // cria o token de acessosignin
     const token = createJWT(userSlug);
 
     res.cookie("authToken", token, {
-        httpOnly: true,   // Não acessível via JavaScript
-        secure: process.env.NODE_ENV === "development", // Só enviar em HTTPS, em produção
-        maxAge: 3600000,   // Token expira após 1 hora (1 hora = 3600000 ms)
-        sameSite: "strict", // Impede que o cookie seja enviado em requisições cross-site
+        maxAge: 3600000  // Token expires after 1 hour (1 hour = 3600000 ms)
     });
     // retorna o resultado (token, user)
     res.status(201).json({
@@ -78,10 +75,7 @@ export const signin: RequestHandler = async (req, res) => {
 
     const token = createJWT(user.slug);
     res.cookie("authToken", token, {
-        httpOnly: true,   // Não acessível via JavaScript
-        secure: process.env.NODE_ENV === "development", // Só enviar em HTTPS, em produção
-        maxAge: 3600000,   // Token expira após 1 hora (1 hora = 3600000 ms)
-        sameSite: "strict", // Impede que o cookie seja enviado em requisições cross-site
+        maxAge: 3600000  // Token expires after 1 hour (1 hour = 3600000 ms)
     });
 
     res.status(200).json({
