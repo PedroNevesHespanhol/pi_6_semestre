@@ -45,14 +45,12 @@ export const signup: RequestHandler = async (req, res) => {
         password: hashPassword 
     });
 
-    // cria o token de acessosignin
+    // cria o token de acesso
     const token = createJWT(userSlug);
 
-    res.cookie("authToken", token, {
-        maxAge: 3600000  // Token expires after 1 hour (1 hour = 3600000 ms)
-    });
     // retorna o resultado (token, user)
     res.status(201).json({
+        token,
         user: {
             name: newUser.name,
             slug: newUser.slug,
@@ -74,15 +72,13 @@ export const signin: RequestHandler = async (req, res) => {
     if(!verifyPass) return res.status(401).json({ error: 'Acesso negado!' });
 
     const token = createJWT(user.slug);
-    res.cookie("authToken", token, {
-        maxAge: 3600000  // Token expires after 1 hour (1 hour = 3600000 ms)
-    });
 
     res.status(200).json({
+        token,
         user: {
             name: user.name,
             slug: user.slug,
             avatar: user.avatar
         }
     });
-} 
+}
