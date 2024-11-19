@@ -8,6 +8,7 @@ import * as feedController from "../controllers/feed";
 import * as searchController from "../controllers/search";
 import * as trendController from "../controllers/trend";
 import * as suggestionsController from "../controllers/suggestion"
+import { uploadMulter } from "../utils/uploadMulter";
 
 export const mainRouter = Router();
 
@@ -26,8 +27,8 @@ mainRouter.get('/user/:slug', verifyJWT, userController.getUser);
 mainRouter.get('/user/:slug/posts', verifyJWT, userController.getUserPosts);
 mainRouter.post('/user/:slug/follow', verifyJWT, userController.followToggle);
 mainRouter.put('/user', verifyJWT, userController.updateUser);
-// mainRouter.put('/user/avatar');
-// mainRouter.put('/user/cover');
+mainRouter.put('/user/avatar', verifyJWT, uploadMulter, userController.uploadAvatar);
+mainRouter.put('/user/cover', verifyJWT, uploadMulter, userController.uploadCover);
 
 mainRouter.get('/feed', verifyJWT, feedController.getFeed);
 mainRouter.get('/search', verifyJWT, searchController.searchPosts);

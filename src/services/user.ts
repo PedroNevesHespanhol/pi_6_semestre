@@ -158,3 +158,10 @@ export const getFollowSuggestions = async (slug: string) => {
         suggestions[slugIndex].avatar = getPublicURL(suggestions[slugIndex].avatar);
     }
 }
+
+export const saveImage = async (slug: string, data: Prisma.UserUpdateInput) => {
+    await prisma.user.update({ 
+        where: { slug },
+        data
+    });
+}

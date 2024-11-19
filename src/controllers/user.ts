@@ -1,8 +1,10 @@
 import { Request, Response } from 'express';
 import { ExtendedRequest } from '../types/extended-request';
-import { checkIfFollows, findPostsByUser, findUserBySlug, followUser, getUserFollowersCount, getUserFollowingCount, getUserPostsCount, unfollowUser, updateUserInfo } from '../services/user';
+import { checkIfFollows, findPostsByUser, findUserBySlug, followUser, getUserFollowersCount, getUserFollowingCount, getUserPostsCount, saveImage, unfollowUser, updateUserInfo } from '../services/user';
 import { userPostsSchema } from '../schemas/user-posts';
 import { updateUserSchema } from '../schemas/update-user';
+import { uploadAvatarSchema } from '../schemas/avatar';
+import { uploadCoverSchema } from '../schemas/cover';
 
 export const getUser = async (req: ExtendedRequest, res: Response) => {
     // Your logic to get a user
@@ -60,3 +62,51 @@ export const updateUser = async (req: ExtendedRequest, res: Response) => {
     );
     res.json({ message: 'Sucess' });
 }
+
+export const uploadAvatar = async (req: ExtendedRequest, res: Response) => {
+    try {
+
+        const me = req.userSlug as string;
+        console.log(me)
+        const file = req.file;
+        console.log(file)
+        if (!file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        const avatar = `http://localhost:5000/${file.destination}/${file.filename}`;
+
+        const body = { avatar: avatar }
+        console.log(body)
+        const safeData = uploadAvatarSchema.safeParse(body);
+        console.log(safeData)
+        if (!safeData.success) return res.json({ error: safeData.error.flatten().fieldErrors });
+
+        await saveImage(me, { ...safeData.data, avatar });
+        
+        res.json({ message: 'Success', avatar: avatar });
+    } catch (error) {
+        console.log(req, res, error);
+    }
+};
+
+export const uploadCover = async (req: ExtendedRequest, res: Response) => {
+    try {
+
+        const me = req.userSlug as string;
+        const file = req.file;
+        if (!file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        const cover = `http://localhost:5000/${file.destination}/${file.filename}`;
+
+        const body = { cover: cover }
+        const safeData = uploadCoverSchema.safeParse(body);
+        if (!safeData.success) return res.json({ error: safeData.error.flatten().fieldErrors });
+
+        await saveImage(me, { ...safeData.data, cover });
+        
+        res.json({ message: 'Success', cover: cover });
+    } catch (error) {
+        console.log(req, res, error);
+    }
+};
