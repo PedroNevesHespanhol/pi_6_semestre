@@ -14,14 +14,14 @@ function checkFolderExistOrCreate (folder) {
 
 const storage = multer.diskStorage({
   destination: function (req: ExtendedRequest, file, cb) {
-    const dest = 'upload/images'
-    const path = dest + '/' + req.userSlug
+    const dest = 'uploads'
+    const path = dest
     checkFolderExistOrCreate(path)
     cb(null, path)
   },
   filename: function (req: ExtendedRequest, file, cb) {
-    const dest = 'upload/images'
-    const path = dest + '/' + req.userSlug
+    const dest = 'uploads'
+    const path = dest
     const fileName = file.originalname
     const fileExtension = fileName.substring(fileName.lastIndexOf('.'))
     const fileNameWithoutExt = fileName.substring(0, fileName.lastIndexOf('.'))

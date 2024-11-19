@@ -73,7 +73,7 @@ export const uploadAvatar = async (req: ExtendedRequest, res: Response) => {
         if (!file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        const avatar = `http://localhost:5000/${file.destination}/${file.filename}`;
+        const avatar = `${file.destination}/${file.filename}`;
 
         const body = { avatar: avatar }
         console.log(body)
@@ -97,7 +97,7 @@ export const uploadCover = async (req: ExtendedRequest, res: Response) => {
         if (!file) {
             return res.status(400).json({ error: 'No file uploaded' });
         }
-        const cover = `http://localhost:5000/${file.destination}/${file.filename}`;
+        const cover = `${file.destination}/${file.filename}`;
 
         const body = { cover: cover }
         const safeData = uploadCoverSchema.safeParse(body);
