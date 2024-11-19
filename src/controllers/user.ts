@@ -26,7 +26,7 @@ export const getUserPosts = async (req: ExtendedRequest, res: Response) => {
     const safeData = userPostsSchema.safeParse(req.query);
     if(!safeData.success) return res.json({ error: safeData.error.flatten().fieldErrors });
 
-    let perPage = 2;
+    let perPage = 10;
     let currentPage = safeData.data.page || 0;
 
     const posts = await findPostsByUser(slug, currentPage, perPage);

@@ -10,7 +10,7 @@ export const getFeed = async (req: ExtendedRequest, res: Response) => {
         return res.json({ error: safeData.error.flatten().fieldErrors });
     }
 
-    let perPage = 2;
+    let perPage = 10;
     let currentPage = safeData.data.page || 0;
 
     const following = await getUserFollowing(req.userSlug as string);

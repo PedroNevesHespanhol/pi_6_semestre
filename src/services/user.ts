@@ -76,6 +76,13 @@ export const getUserPostsCount = async (slug: string) => {
 export const findPostsByUser = async (slug: string, currentPage: number, perPage: number) => {
     const posts = await prisma.post.findMany({
         include: {
+            user: {
+                select: {
+                    name: true,
+                    avatar: true,
+                    slug: true
+                }
+            },
             likes: {
                 select: {
                     userSlug: true
