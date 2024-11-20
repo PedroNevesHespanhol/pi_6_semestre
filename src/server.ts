@@ -6,9 +6,9 @@ const server = express();
 server.use(helmet());
 
 server.use(cors({
-origin: 'http://localhost:3000', // Substitua pelo URL do seu front-end
-optionsSuccessStatus: 200,
-exposedHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resource-Policy']
+    origin: ['http://localhost:3000', 'http://localhost:8081'], // Substitua pelos URLs do seu front-end
+    optionsSuccessStatus: 200,
+    exposedHeaders: ['Cross-Origin-Opener-Policy', 'Cross-Origin-Resource-Policy']
 }));
 
 // Configurar cabeçalhos de resposta
