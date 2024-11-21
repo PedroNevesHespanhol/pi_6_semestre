@@ -99,7 +99,14 @@ export const findPostsByUser = async (
       take: perPage,
    });
 
-   return posts;
+   // return posts;
+   return posts.map(post => ({
+      ...post,
+      user: {
+         ...post.user,
+         avatar: getPublicURL(post.user.avatar),
+      },
+   }));
 };
 
 export const checkIfFollows = async (user1Slug: string, user2Slug: string) => {
